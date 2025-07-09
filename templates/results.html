@@ -1,0 +1,816 @@
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../static/icon.png" type="image/png">
+
+    <title>RandGen | Resultados de la Generación</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        xintegrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary-color: #64748b;
+            --accent-color: #f59e0b;
+            --success-color: #059669;
+            --danger-color: #dc2626;
+            --warning-color: #d97706;
+            --light-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            transition: all 0.3s ease;
+        }
+
+        body {
+            /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-primary);
+        }
+
+        .main-container {
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            margin: 2rem auto;
+            max-width: 1200px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .header-section h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .content-section {
+            padding: 2rem;
+        }
+
+        .section-card {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .section-header i {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .numbers-display {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 2px solid var(--border-color);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            background: var(--light-bg);
+            border-radius: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .numbers-display::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .numbers-display::-webkit-scrollbar-track {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        .numbers-display::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        .numbers-display span {
+            flex: 0 0 calc(16.66% - 0.5rem);
+            min-width: 60px;
+            border: 1px solid var(--border-color);
+            padding: 0.5rem;
+            background: var(--card-bg);
+            text-align: center;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .numbers-display span:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .download-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success-color) 0%, #047857 100%);
+            color: white;
+        }
+
+        .btn-dark {
+            background: linear-gradient(135deg, var(--text-primary) 0%, #0f172a 100%);
+            color: white;
+        }
+
+        .table-container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+        }
+
+        .table {
+            margin: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .table th {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            font-weight: 600;
+            text-align: center;
+            padding: 1rem;
+            border: none;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .table td {
+            padding: 0.75rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 500;
+        }
+
+        .table tbody tr:hover {
+            background: var(--light-bg);
+        }
+
+        .table tfoot td {
+            background: linear-gradient(135deg, var(--light-bg) 0%, #f1f5f9 100%);
+            font-weight: 700;
+            color: var(--text-primary);
+            border-top: 2px solid var(--primary-color);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--light-bg);
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .alert {
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            color: var(--success-color);
+            border-left: 4px solid var(--success-color);
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+            color: var(--danger-color);
+            border-left: 4px solid var(--danger-color);
+        }
+
+        .alert-warning {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            color: var(--warning-color);
+            border-left: 4px solid var(--warning-color);
+        }
+
+        .histogram-container {
+            text-align: center;
+            background: var(--card-bg);
+            padding: 1.5rem;
+        }
+
+        .histogram-container img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .back-button-container {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .floating-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+            /* Esto es importante para que las formas no creen barras de desplazamiento */
+        }
+
+        .shape {
+            position: absolute;
+            opacity: 0.1;
+            filter: blur(2px);
+            /* Añade un ligero desenfoque para un efecto más suave */
+            /* Propiedades para hacer que parezcan dados */
+            border-radius: 15px;
+            /* Esquinas redondeadas */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            /* Sombra sutil para dar volumen */
+        }
+
+        /* Todas las shapes ahora serán cuadradas con esquinas redondeadas */
+        .shape1 {
+            width: 100px;
+            height: 100px;
+            background: var(--primary-color);
+            top: 5%;
+            left: 5%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .shape2 {
+            width: 150px;
+            height: 150px;
+            background: var(--danger-color);
+            top: 55%;
+            right: 5%;
+            animation: float 8s ease-in-out infinite reverse;
+        }
+
+        .shape3 {
+            width: 80px;
+            height: 80px;
+            background: var(--success-color);
+            /* transform: rotate(45deg); Removido para que parezca un dado normal */
+            top: 30%;
+            right: 3%;
+            animation: float 7s ease-in-out infinite;
+        }
+
+        /* Nuevas formas */
+        .shape4 {
+            width: 120px;
+            height: 120px;
+            background: var(--danger-color);
+            bottom: 2%;
+            left: 2%;
+            animation: float 9s ease-in-out infinite;
+        }
+
+        .shape5 {
+            width: 90px;
+            height: 90px;
+            background: var(--warning-color);
+            top: 5%;
+            right: 5%;
+            animation: float 7.5s ease-in-out infinite reverse;
+        }
+
+        .shape6 {
+            width: 70px;
+            height: 70px;
+            background: var(--secondary-color);
+            bottom: 25%;
+            left: 5%;
+            animation: float 6.5s ease-in-out infinite;
+        }
+
+        .shape7 {
+            width: 110px;
+            height: 110px;
+            background: var(--primary-dark);
+            top: 45%;
+            left: 2%;
+            animation: float 8.5s ease-in-out infinite reverse;
+        }
+
+        .shape8 {
+            width: 60px;
+            height: 60px;
+            background: var(--success-color);
+            top: 30%;
+            left: 5%;
+            animation: float 5.5s ease-in-out infinite;
+        }
+
+        .shape9 {
+            width: 130px;
+            height: 130px;
+            background: var(--accent-color);
+            bottom: 2%;
+            right: 3%;
+            animation: float 9.2s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            25% {
+                transform: translateY(-15px) rotate(5deg) translateX(10px);
+            }
+
+            50% {
+                transform: translateY(-30px) rotate(-5deg) translateX(-10px);
+            }
+
+            75% {
+                transform: translateY(-15px) rotate(5deg) translateX(10px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                margin: 1rem;
+                border-radius: 16px;
+            }
+
+            .header-section h1 {
+                font-size: 2rem;
+            }
+
+            .content-section {
+                padding: 1.5rem;
+            }
+
+            .numbers-display span {
+                flex: 0 0 calc(33.33% - 0.5rem);
+                min-width: 50px;
+            }
+
+            .download-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 250px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .table-container {
+                overflow-x: auto;
+            }
+
+            /* Ocultar algunas formas en pantallas pequeñas para evitar saturación */
+            .shape5,
+            .shape6,
+            .shape7,
+            .shape8,
+            .shape9 {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .numbers-display span {
+                flex: 0 0 calc(50% - 0.5rem);
+            }
+
+            .shape4 {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="floating-shapes">
+        <div class="shape shape1"></div>
+        <div class="shape shape2"></div>
+        <div class="shape shape3"></div>
+        <div class="shape shape4"></div>
+        <div class="shape shape5"></div>
+        <div class="shape shape6"></div>
+        <div class="shape shape7"></div>
+        <div class="shape shape8"></div>
+        <div class="shape shape9"></div>
+    </div>
+
+    <div class="main-container">
+        <div class="header-section">
+            <h1><i class="fas fa-chart-line"></i> Resultados de la Generación</h1>
+        </div>
+
+        <div class="content-section">
+            <div class="section-card">
+                <div class="section-header">
+                    <i class="fas fa-list-ol"></i>
+                    <h2>Números Generados (Primeros 100)</h2>
+                </div>
+
+                <div class="numbers-display">
+                    {% if numeros %}
+                    {% for num in numeros %}
+                    <span>{{ num }}</span>
+                    {% endfor %}
+                    {% else %}
+                    <p class="text-muted">No se generaron números.</p>
+                    {% endif %}
+                </div>
+
+                <div class="download-buttons">
+                    <form action="/download/csv" method="post" style="display:inline;">
+                        <input type="hidden" name="request_id" value="{{ request_id }}">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-download"></i> Descargar CSV
+                        </button>
+                    </form>
+                    <form action="/download/excel" method="post" style="display:inline;">
+                        <input type="hidden" name="request_id" value="{{ request_id }}">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-file-excel"></i> Descargar Excel
+                        </button>
+                    </form>
+                    <form action="/download/txt" method="post" style="display:inline;">
+                        <input type="hidden" name="request_id" value="{{ request_id }}">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-file-alt"></i> Descargar TXT
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            {% if not es_poisson and prueba_ks_result %}
+            <div class="section-card">
+                <div class="section-header">
+                    <i class="fas fa-chart-area"></i>
+                    <h2>Prueba de Kolmogorov-Smirnov {{ nombre_distribucion }}</h2>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Intervalos</div>
+                        <div class="stat-value">{{ prueba_ks_result['cantidad_de_intervalos'] if
+                            prueba_ks_result['cantidad_de_intervalos'] is defined else 'N/A' }}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">KS Calculado</div>
+                        <div class="stat-value">{{ prueba_ks_result['ks_calculado'] | round(4) if
+                            prueba_ks_result['ks_calculado'] is defined else 'N/A' }}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">KS Tabulado</div>
+                        <div class="stat-value">{{ prueba_ks_result['ks_tabulado'] | round(4) if
+                            prueba_ks_result['ks_tabulado'] is defined else 'N/A' }}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">α</div>
+                        <div class="stat-value">{{ (1 - prueba_ks_result['nivel_confianza']) | round(2) if
+                            prueba_ks_result['nivel_confianza'] is defined else 'N/A' }}</div>
+                    </div>
+                </div>
+
+                {% if prueba_ks_result['aprueba_hipotesis_nula'] is not none %}
+                {% if prueba_ks_result['aprueba_hipotesis_nula'] %}
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>No se rechaza la Hipótesis nula</strong>
+                </div>
+                {% else %}
+                <div class="alert alert-danger">
+                    <i class="fas fa-times-circle"></i>
+                    <strong>Se rechaza la Hipótesis nula</strong>
+                </div>
+                {% endif %}
+                {% else %}
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    No se pudo determinar si se aprueba la Hipótesis nula.
+                </div>
+                {% endif %}
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Intervalo</th>
+                                <th>FO</th>
+                                <th>FE</th>
+                                <th>FOR</th>
+                                <th>FER</th>
+                                <th>|FOR - FER|</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in tabla_data_ks %}
+                            <tr>
+                                <td>{{ row.intervalo }}</td>
+                                <td>{{ row.fo }}</td>
+                                <td>{{ row.fe }}</td>
+                                <td>{{ row.for }}</td>
+                                <td>{{ row.fer }}</td>
+                                <td>{{ row.estadistico_ks }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            {% if prueba_ks_result %}
+                            <tr>
+                                <td>Total</td>
+                                <td>{{ prueba_ks_result['sumatoria_frecuencia_observada'] | round(2) if
+                                    prueba_ks_result['sumatoria_frecuencia_observada'] is defined else 'N/A' }}</td>
+                                <td>{{ prueba_ks_result['sumatoria_frecuencia_esperada'] | round(2) if
+                                    prueba_ks_result['sumatoria_frecuencia_esperada'] is defined else 'N/A' }}</td>
+                                <td>{{ prueba_ks_result['sumatoria_frecuencia_observada_relativa'] | round(4) if
+                                    prueba_ks_result['sumatoria_frecuencia_observada_relativa'] is defined else 'N/A'
+                                    }}
+                                </td>
+                                <td>{{ prueba_ks_result['sumatoria_frecuencia_esperada_relativa'] | round(4) if
+                                    prueba_ks_result['sumatoria_frecuencia_esperada_relativa'] is defined else 'N/A'
+                                    }}
+                                </td>
+                                <td>{{ prueba_ks_result['ks_calculado'] | round(4) if prueba_ks_result['ks_calculado']
+                                    is defined else 'N/A' }}</td>
+                            </tr>
+                            {% endif %}
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="section-card mt-5">
+                <div class="section-header">
+                    <i class="fas fa-chart-area"></i>
+                    <h2>Prueba de Chi-Cuadrado {{ nombre_distribucion }}</h2>
+                </div>
+
+                {% if resultado_prueba_chi %}
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Intervalos</div>
+                        <div class="stat-value">{{ resultado_prueba_chi['cantidad_de_intervalos'] if
+                            resultado_prueba_chi['cantidad_de_intervalos'] is defined else 'N/A' }}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Chi² Calculado</div>
+                        <div class="stat-value">{{ resultado_prueba_chi['chi_calculado'] | round(2) if
+                            resultado_prueba_chi['chi_calculado'] is defined else 'N/A' }}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Chi² Tabulado</div>
+                        <div class="stat-value">{{ resultado_prueba_chi['chi_tabulado'] | round(2) if
+                            resultado_prueba_chi['chi_tabulado'] is defined else 'N/A' }}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Grados de Libertad</div>
+                        <div class="stat-value">{{ resultado_prueba_chi['grados_de_libertad'] if
+                            resultado_prueba_chi['grados_de_libertad'] is defined else 'N/A' }}</div>
+                    </div>
+                </div>
+                {% if resultado_prueba_chi['aprueba_hipotesis_nula'] is not none %}
+                {% if resultado_prueba_chi['aprueba_hipotesis_nula'] %}
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>No se rechaza la Hipótesis nula</strong>
+                </div>
+                {% else %}
+                <div class="alert alert-danger">
+                    <i class="fas fa-times-circle"></i>
+                    <strong>Se rechaza la Hipótesis nula</strong>
+                </div>
+                {% endif %}
+                {% else %}
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    No se pudo determinar si se aprueba la Hipótesis nula.
+                </div>
+                {% endif %}
+                {% endif %}
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Intervalo</th>
+                                <th>FO</th>
+                                <th>FE</th>
+                                <th>Chi²</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in tabla_data_chi %}
+                            <tr>
+                                <td>{{ row.intervalo }}</td>
+                                <td>{{ row.fo }}</td>
+                                <td>{{ row.fe }}</td>
+                                <td>{{ row.chi_cuadrado_intervalo }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            {% if resultado_prueba_chi %}
+                            <tr>
+                                <td>Total</td>
+                                <td>{{ resultado_prueba_chi['sumatoria_frecuencia_observada'] | round(2) if
+                                    resultado_prueba_chi['sumatoria_frecuencia_observada'] is defined else 'N/A' }}</td>
+                                <td>{{ resultado_prueba_chi['sumatoria_frecuencia_esperada'] | round(2) if
+                                    resultado_prueba_chi['sumatoria_frecuencia_esperada'] is defined else 'N/A' }}</td>
+                                <td>{{ resultado_prueba_chi['chi_calculado'] | round(2) if
+                                    resultado_prueba_chi['chi_calculado'] is defined else 'N/A' }}</td>
+                            </tr>
+                            {% endif %}
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+            <div class="section-card mt-5">
+                <div class="section-header">
+                    <i class="fas fa-chart-bar"></i>
+                    <h2>Histograma de Frecuencias</h2>
+                </div>
+
+                <div class="histogram-container">
+                    {% if histogram_img %}
+                    <img src="data:image/png;base64,{{ histogram_img }}" alt="Histograma de Frecuencias"
+                        class="img-fluid">
+                    {% else %}
+                    <p class="text-muted">No se pudo generar el histograma.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="back-button-container">
+                <a href="/" class="btn btn-dark">
+                    <i class="fas fa-arrow-left"></i> Volver al Inicio
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        xintegrity="sha384-YvpcrYfotY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script>
+        // Animaciones sutiles al cargar
+        document.addEventListener('DOMContentLoaded', function () {
+            const cards = document.querySelectorAll('.section-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+
+            // Efecto hover en números
+            const numbers = document.querySelectorAll('.numbers-display span');
+            numbers.forEach(number => {
+                number.addEventListener('mouseenter', function () {
+                    this.style.transform = 'scale(1.1) translateY(-2px)';
+                });
+                number.addEventListener('mouseleave', function () {
+                    this.style.transform = 'scale(1) translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../static/icon.png" type="image/png">
+    <title>RandGen | Generador de Variables Aleatorias</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        xintegrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary-color: #64748b;
+            --accent-color: #f59e0b;
+            --success-color: #059669;
+            --danger-color: #dc2626;
+            --warning-color: #d97706;
+            --light-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            transition: all 0.3s ease;
+        }
+
+        body {
+            /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-primary);
+        }
+
+        .main-container {
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            margin: 2rem auto;
+            max-width: 800px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            position: relative;
+            /* Ensure it's above floating shapes */
+            z-index: 10;
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .header-section h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-section .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-top: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-section {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-control,
+        .form-select {
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: var(--card-bg);
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .distribution-params {
+            background: var(--light-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .distribution-params::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+        }
+
+        .distribution-params h3 {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-divider {
+            margin: 2rem 0;
+            border: none;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h2 {
+            color: var(--text-primary);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .alert {
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+            color: var(--danger-color);
+            border-left: 4px solid var(--danger-color);
+        }
+
+        .input-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .input-group-single {
+            grid-template-columns: 1fr;
+        }
+
+        .icon-input {
+            position: relative;
+        }
+
+        .icon-input i {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .floating-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+            /* Contain shapes within this div */
+        }
+
+        .shape {
+            position: absolute;
+            opacity: 0.1;
+            filter: blur(2px);
+            /* Soften the edges of the shapes */
+            /* Propiedades para hacer que parezcan dados */
+            border-radius: 15px;
+            /* Esquinas redondeadas para parecer dados */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            /* Sombra sutil para dar volumen */
+        }
+
+        /* Todas las shapes ahora serán cuadradas con esquinas redondeadas */
+        .shape1 {
+            width: 100px;
+            height: 100px;
+            background: var(--primary-color);
+            top: 10%;
+            left: 10%;
+            animation: float 6s ease-in-out infinite, rotateShape 12s linear infinite;
+            /* Removed border-radius */
+        }
+
+        .shape2 {
+            width: 150px;
+            height: 150px;
+            background: var(--bs-pink);
+            top: 50%;
+            right: 5%;
+            animation: float 8s ease-in-out infinite reverse, rotateShape 10s linear infinite reverse;
+            /* Removed border-radius */
+        }
+
+        .shape3 {
+            width: 80px;
+            height: 80px;
+            background: var(--success-color);
+            /* Removed transform: rotate(45deg); */
+            top: 15%;
+            right: 10%;
+            animation: float 7s ease-in-out infinite, rotateShape 15s linear infinite;
+            /* Removed border-radius */
+        }
+
+        .shape4 {
+            width: 120px;
+            height: 120px;
+            background: var(--danger-color);
+            bottom: 5%;
+            left: 5%;
+            animation: float 9s ease-in-out infinite reverse, rotateShape 11s linear infinite;
+            /* Removed border-radius */
+        }
+
+        .shape5 {
+            width: 90px;
+            height: 90px;
+            background: var(--warning-color);
+            top: 50%;
+            left: 15%;
+            animation: float 7s ease-in-out infinite, rotateShape 13s linear infinite reverse;
+            /* Removed border-radius */
+        }
+
+        .shape6 {
+            width: 70px;
+            height: 70px;
+            background: var(--secondary-color);
+            /* Changed to secondary-color for variety */
+            /* Removed transform: rotate(15deg); */
+            bottom: 5%;
+            right: 15%;
+            animation: float 6s ease-in-out infinite reverse, rotateShape 9s linear infinite;
+            /* Removed border-radius */
+        }
+
+        /* The original shapes 7, 8, 9 were not present in the provided HTML,
+           so they are not included in this update. If you need them,
+           please provide their definitions. */
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px) translateX(0px);
+            }
+
+            25% {
+                transform: translateY(-15px) translateX(10px);
+            }
+
+            50% {
+                transform: translateY(10px) translateX(-15px);
+            }
+
+            75% {
+                transform: translateY(-5px) translateX(5px);
+            }
+        }
+
+        @keyframes rotateShape {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                margin: 1rem;
+                border-radius: 16px;
+            }
+
+            .header-section h1 {
+                font-size: 2rem;
+            }
+
+            .form-section {
+                padding: 1.5rem;
+            }
+
+            .input-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="floating-shapes">
+        <div class="shape shape1"></div>
+        <div class="shape shape2"></div>
+        <div class="shape shape3"></div>
+        <div class="shape shape4"></div>
+        <div class="shape shape5"></div>
+        <div class="shape shape6"></div>
+    </div>
+
+    <div class="main-container">
+        <div class="header-section">
+            <h1><i class="fas fa-chart-line"></i> Generador de Variables Aleatorias</h1>
+        </div>
+
+        <div class="form-section">
+            {% if error %}
+            <div class="alert alert-danger" role="alert">
+                <i class="fas fa-exclamation-triangle"></i> {{ error }}
+            </div>
+            {% endif %}
+
+            <form action="/generate" method="post">
+                <div class="form-group">
+                    <label for="distribution_type" class="form-label">
+                        <i class="fas fa-random"></i> Tipo de distribución
+                    </label>
+                    <select class="form-select" id="distribution_type" name="distribution_type"
+                        onchange="showDistributionParams()">
+                        <option value="uniforme">📊 Uniforme</option>
+                        <option value="exponencial">📈 Exponencial</option>
+                        <option value="normal">🔔 Normal</option>
+                        <option value="poisson">⚡ Poisson</option>
+                    </select>
+                </div>
+
+                <div id="uniforme_params" class="distribution-params">
+                    <h3><i class="fas fa-equals"></i> Distribución Uniforme</h3>
+                    <div class="input-group">
+                        <div class="form-group">
+                            <label for="uniforme_a" class="form-label">
+                                Valor mínimo (a)
+                            </label>
+                            <input type="number" step="any" class="form-control" id="uniforme_a" name="uniforme_a"
+                                value="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="uniforme_b" class="form-label">
+                                Valor máximo (b)
+                            </label>
+                            <input type="number" step="any" class="form-control" id="uniforme_b" name="uniforme_b"
+                                value="1">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="exponencial_params" class="distribution-params" style="display:none;">
+                    <h3><i class="fas fa-chart-line"></i> Distribución Exponencial</h3>
+                    <div class="input-group input-group-single">
+                        <div class="form-group">
+                            <label for="exponencial_media" class="form-label">
+                                Media (o 1/λ)
+                            </label>
+                            <input type="number" step="any" class="form-control" id="exponencial_media"
+                                name="exponencial_media" value="5">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="normal_params" class="distribution-params" style="display:none;">
+                    <h3><i class="fas fa-bell"></i> Distribución Normal</h3>
+                    <div class="input-group">
+                        <div class="form-group">
+                            <label for="normal_media" class="form-label">
+                                Media (μ)
+                            </label>
+                            <input type="number" step="any" class="form-control" id="normal_media" name="normal_media"
+                                value="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="normal_desviacion" class="form-label">
+                                Desviación estándar (σ)
+                            </label>
+                            <input type="number" step="any" class="form-control" id="normal_desviacion"
+                                name="normal_desviacion" value="1">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="poisson_params" class="distribution-params" style="display:none;">
+                    <h3><i class="fas fa-bolt"></i> Distribución Poisson</h3>
+                    <div class="input-group input-group-single">
+                        <div class="form-group">
+                            <label for="poisson_media" class="form-label">
+                                Media (λ)
+                            </label>
+                            <input type="number" step="any" class="form-control" id="poisson_media" name="poisson_media"
+                                value="3">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <div class="form-group">
+                        <label for="cantidad" class="form-label">
+                            <i class="fas fa-hashtag"></i> Cantidad de números
+                        </label>
+                        <input type="number" class="form-control" id="cantidad" name="cantidad" min="1" max="50000"
+                            value="1000">
+                    </div>
+                    <div class="form-group">
+                        <label for="decimales_truncar" class="form-label">
+                            <i class="fas fa-cut"></i> Decimales a truncar
+                        </label>
+                        <input type="number" class="form-control" id="decimales_truncar" name="decimales_truncar"
+                            min="2" max="16" value="2">
+                    </div>
+                </div>
+
+                <hr class="section-divider">
+
+                <div class="section-header">
+                    <h2><i class="fas fa-cog"></i> Configuración de Pruebas</h2>
+                </div>
+
+                <div class="input-group">
+                    <div class="form-group">
+                        <label for="confianza" class="form-label">
+                            <i class="fas fa-percentage"></i> Nivel de confianza
+                        </label>
+                        <input type="number" step="0.01" class="form-control" id="confianza" name="confianza" min="1"
+                            max="99.95" value="95">
+                    </div>
+                    <div class="form-group">
+                        <label for="intervalo_grafico" class="form-label">
+                            <i class="fas fa-chart-bar"></i> Intervalos histograma
+                        </label>
+                        <input type="number" class="form-control" id="intervalo_grafico" name="intervalo_grafico"
+                            min="1" value="10">
+                    </div>
+                </div>
+
+                <div class="form-group" id="intervalo_prueba_div">
+                    <label for="intervalo_prueba" class="form-label">
+                        <i class="fas fa-table"></i> Intervalos pruebas (opcional)
+                    </label>
+                    <input type="number" class="form-control" id="intervalo_prueba" name="intervalo_prueba" min="1"
+                        placeholder="Dejar vacío para cálculo automático">
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-rocket"></i> Generar y Analizar
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        xintegrity="sha384-YvpcrYfotY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script>
+        function showDistributionParams() {
+            const type = document.getElementById('distribution_type').value;
+            const params = ['uniforme_params', 'exponencial_params', 'normal_params', 'poisson_params'];
+
+            params.forEach(param => {
+                document.getElementById(param).style.display = 'none';
+            });
+
+            document.getElementById('intervalo_prueba_div').style.display = 'block';
+            document.getElementById(`${type}_params`).style.display = 'block';
+
+            if (type === 'poisson') {
+                document.getElementById('intervalo_prueba_div').style.display = 'none';
+            }
+        }
+
+        // Inicializar al cargar la página
+        document.addEventListener('DOMContentLoaded', () => {
+            showDistributionParams();
+
+            // Animación sutil para los inputs
+            const inputs = document.querySelectorAll('.form-control, .form-select');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function () {
+                    this.parentElement.style.transform = 'scale(1.02)';
+                });
+
+                input.addEventListener('blur', function () {
+                    this.parentElement.style.transform = 'scale(1)';
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
