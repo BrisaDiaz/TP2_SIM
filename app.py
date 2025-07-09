@@ -380,6 +380,7 @@ def download(file_format):
         return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000)) 
-    app.run(host='0.0.0.0', port=port, debug=False)
+    # Para producción, use un servidor WSGI como Gunicorn o uWSGI.
+    # Ejemplo: gunicorn -w 4 app:app
+    app.run(debug=False) # Nunca usar debug=True en producción.
+    app.run(host='0.0.0.0', port=5000) # Escucha en todas las interfaces, puerto 5000.
