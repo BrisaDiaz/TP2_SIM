@@ -238,7 +238,7 @@ class PruebaKS:
         sumatoria_for = sum(frecuencia_observada_relativa.values())
         sumatoria_fer = sum(frecuencia_esperada_relativa.values())
 
-        ks_calculado = sum(estadisticos_por_intervalo.values())
+        ks_calculado = max(estadisticos_por_intervalo.values())
         ks_tabulado = self._obtener_ks_tabulado()
 
         aprueba_hipotesis_nula = ks_calculado < ks_tabulado if ks_tabulado is not None else None
